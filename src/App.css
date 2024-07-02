@@ -163,9 +163,14 @@ body {
   border-radius: 2px;
 }
 
+.todo__item .label .check_icon {
+  fill: #fff;
+}
+
 .todo__item .label.clicked {
   .check__box {
     border: none;
+
     .check_icon {
       fill: #34495e;
     }
