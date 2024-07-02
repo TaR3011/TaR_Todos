@@ -15,8 +15,10 @@ const Todo = ({ todo }) => {
   useEffect(() => {
     if (todo.isDone) {
       checkRef.current.classList += " clicked";
+      setIsCheck(true);
     } else {
       checkRef.current.classList = "label";
+      setIsCheck(false);
     }
   }, [todo]);
 
@@ -25,6 +27,8 @@ const Todo = ({ todo }) => {
       return t.id != todo.id;
     });
     setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+
     setIsCheck(false);
   };
 
@@ -39,9 +43,11 @@ const Todo = ({ todo }) => {
     });
     setIsEditable(false);
     setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
   };
 
   const handleCheck = () => {
+    console.log(checkRef.current.classList);
     if (!isCheck) {
       checkRef.current.classList += " clicked";
       const updatedTodos = todos.map((t) => {
@@ -54,12 +60,24 @@ const Todo = ({ todo }) => {
       });
       setIsCheck(true);
       setTodos(updatedTodos);
+      localStorage.setItem("todos", JSON.stringify(updatedTodos));
     } else {
       checkRef.current.classList = "label";
+      const updatedTodos = todos.map((t) => {
+        if (t.id === todo.id) {
+          // checkRef.current.classList += " clicked";
+          return { ...t, isDone: !todo.isDone };
+        } else {
+          return t;
+        }
+      });
       setIsCheck(false);
+      setTodos(updatedTodos);
+      localStorage.setItem("todos", JSON.stringify(updatedTodos));
     }
 
     console.log(todos);
+    console.log(checkRef.current.classList);
   };
 
   return (
@@ -74,7 +92,11 @@ const Todo = ({ todo }) => {
           />
         </span>
         <span className="item__title">
-          {isEditable ? <input ref={inputRef} /> : todo.title}
+          {isEditable ? (
+            <input className="edit__todo" ref={inputRef} />
+          ) : (
+            todo.title
+          )}
         </span>
       </div>
       <div className="icons__section">

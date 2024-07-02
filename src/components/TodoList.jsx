@@ -1,6 +1,6 @@
 import { UilPlusCircle } from "@iconscout/react-unicons";
 import Todo from "./Todo";
-import { useRef, useState, useContext } from "react";
+import { useRef, useState, useContext, useEffect } from "react";
 import { TodosContext } from "../contexts/todosContext";
 
 // const initialTodos = [
@@ -24,9 +24,15 @@ import { TodosContext } from "../contexts/todosContext";
 const TodoList = () => {
   // const [tasks, setTasks] = useState(initialTodos);
   const { todos, setTodos } = useContext(TodosContext);
-  const [value, setValue] = useState("all");
+  const [fillterValue, setFillterValue] = useState("all");
   const inputRef = useRef("");
   let todosWillRender = todos;
+
+  useEffect(() => {
+    console.log("calling use effect");
+    const storageTodos = JSON.parse(localStorage.getItem("todos")) ?? [];
+    setTodos(storageTodos);
+  }, []);
 
   const doneTodos = todos.filter((t) => {
     return t.isDone;
@@ -37,17 +43,25 @@ const TodoList = () => {
   });
 
   const handelInput = () => {
+    const randomId = Math.floor(Math.random() * 1000);
     const currentValue = inputRef.current.value;
-    setTodos([...todos, { id: "4", title: [currentValue], isDone: false }]);
+    const newTodo = {
+      id: randomId,
+      title: [currentValue],
+      isDone: false,
+    };
+    const updatedTodos = [...todos, newTodo];
+    setTodos(updatedTodos);
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
   };
 
   const handleFilterChange = (e) => {
-    setValue(e.target.value);
+    setFillterValue(e.target.value);
   };
 
-  if (value === "completed") {
+  if (fillterValue === "completed") {
     todosWillRender = doneTodos;
-  } else if (value === "unCompleted") {
+  } else if (fillterValue === "unCompleted") {
     todosWillRender = notDoneTodos;
   } else {
     todosWillRender = todos;
@@ -69,7 +83,11 @@ const TodoList = () => {
         />
       </div>
       <div class="newItem__select">
-        <select class="filter" value={value} onChange={handleFilterChange}>
+        <select
+          class="filter"
+          value={fillterValue}
+          onChange={handleFilterChange}
+        >
           <option value="all">الكل</option>
           <option value="completed">مكتمل</option>
           <option value="unCompleted">غير مكتمل</option>
