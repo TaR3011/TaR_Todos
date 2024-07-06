@@ -33,7 +33,6 @@ const Todo = ({ todo, updateTodoFun }) => {
       return t.id != todo.id;
     });
     setTodos(updatedTodos);
-    // localStorage.setItem("todos", JSON.stringify(updatedTodos));
     updateTodoFun(updatedTodos);
     setIsCheck(false);
   };
@@ -49,7 +48,6 @@ const Todo = ({ todo, updateTodoFun }) => {
     });
     setIsEditable(false);
     setTodos(updatedTodos);
-    // localStorage.setItem("todos", JSON.stringify(updatedTodos));
     updateTodoFun(updatedTodos);
   };
 
@@ -67,7 +65,6 @@ const Todo = ({ todo, updateTodoFun }) => {
       });
       setIsCheck(true);
       setTodos(updatedTodos);
-      // localStorage.setItem("todos", JSON.stringify(updatedTodos));
       updateTodoFun(updatedTodos);
     } else {
       checkRef.current.classList = "label";
@@ -81,7 +78,6 @@ const Todo = ({ todo, updateTodoFun }) => {
       });
       setIsCheck(false);
       setTodos(updatedTodos);
-      // localStorage.setItem("todos", JSON.stringify(updatedTodos));
       updateTodoFun(updatedTodos);
     }
 

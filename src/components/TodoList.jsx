@@ -4,29 +4,10 @@ import { useRef, useState, useContext, useEffect } from "react";
 import { TodosContext } from "../contexts/todosContext";
 import { AuthContext } from "../contexts/authContext";
 
-// const initialTodos = [
-//   {
-//     id: "1",
-//     title: "البحث عن جديد رياكت",
-//     isDone: false,
-//   },
-//   {
-//     id: "2",
-//     title: "walk for hour",
-//     isDone: false,
-//   },
-//   {
-//     id: "3",
-//     title: "Read about mechine learning",
-//     isDone: false,
-//   },
-// ];
-
 const TodoList = ({ signOut }) => {
-  // const [tasks, setTasks] = useState(initialTodos);
   const { todos, setTodos } = useContext(TodosContext);
-  const { users, setUsers, isLoggedIn, setIsLoggedIn } =
-    useContext(AuthContext);
+  // const { users, setUsers, isLoggedIn, setIsLoggedIn } =
+  //   useContext(AuthContext);
 
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
@@ -37,13 +18,9 @@ const TodoList = ({ signOut }) => {
   useEffect(() => {
     console.log("calling use effect");
 
-    // const storageTodos = JSON.parse(localStorage.getItem("todos")) ?? [];
-
     if (currentUser) {
       setTodos(currentUser.todos);
     }
-
-    // setTodos(storageTodos);
   }, []);
 
   const doneTodos = todos.filter((t) => {
@@ -55,7 +32,6 @@ const TodoList = ({ signOut }) => {
   });
 
   const handelInput = () => {
-    // const randomId = Math.floor(Math.random() * 1000);
     const currentValue = inputRef.current.value;
     const newTodo = {
       id: Date.now(),
@@ -67,7 +43,6 @@ const TodoList = ({ signOut }) => {
 
     setTodos(updatedTodos);
 
-    // localStorage.setItem("todos", JSON.stringify(updatedTodos));
     updateLocalStorage(updatedTodos);
   };
 
@@ -104,8 +79,12 @@ const TodoList = ({ signOut }) => {
 
   return (
     <div className="container">
-      <button onClick={signOut}>خروج</button>
-      <h2>قائمة المهام</h2>
+      <div className="header">
+        <h2>قائمة المهام</h2>
+        <button className="logout_btn" onClick={signOut}>
+          خروج
+        </button>
+      </div>
       <div className="new_todo_input">
         <input type="text" placeholder="اضف مهمة..." ref={inputRef} />
         <UilPlusCircle

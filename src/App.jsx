@@ -34,10 +34,8 @@ const initUsers = [
 ];
 
 function App() {
-  const [count, setCount] = useState(0);
   const [todos, setTodos] = useState(initialTodos);
   const [users, setUsers] = useState(initUsers);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
@@ -55,8 +53,6 @@ function App() {
   return (
     <AuthContext.Provider value={{ users, setUsers }}>
       <TodosContext.Provider value={{ todos, setTodos }}>
-        {/* {!isLoggedIn ? <Login /> : <TodoList />} */}
-        {/* <TodoList /> */}
         {currentUser ? (
           <TodoList signOut={handleSignOut} />
         ) : (

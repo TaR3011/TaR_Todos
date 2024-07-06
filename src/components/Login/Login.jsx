@@ -1,40 +1,38 @@
-import React, {
-  useState,
-  useEffect,
-  useReducer,
-  useContext,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 
 import { AuthContext } from "../../contexts/authContext";
-import App from "../../App.jsx";
 
 const Login = ({ setCurrentUser }) => {
   const name = useRef();
   const email = useRef();
   const password = useRef();
+  const [error, setError] = useState("");
   const [showSignIn, setShowSignIn] = useState(false);
   const { users, setUsers } = useContext(AuthContext);
+
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+  };
 
   useEffect(() => {
     const storageUsers = JSON.parse(localStorage.getItem("users")) ?? [];
     setUsers(storageUsers);
-
-    // if (localSignUp) {
-    //   setShowHome(true);
-    // }
-    // if (localEmail) {
-    //   setShow(true);
-    // }
   }, []);
   const handleSignUp = () => {
+    console.log(email.current.value);
+    if (!validateEmail(email.current.value) || password.current.value < 6) {
+      setError("يجب إدخال ايميل صحيح وكلمه مرور قويه");
+      return;
+    } else {
+      setError(null);
+    }
     if (name.current.value && email.current.value && password.current.value) {
       const user = {
         id: Date.now(),
         email: email.current.value,
         name: name.current.value,
         pass: password.current.value,
-        isLoggedIn: false,
         todos: [],
       };
 
@@ -43,8 +41,8 @@ const Login = ({ setCurrentUser }) => {
       setUsers(updatedUser);
 
       localStorage.setItem("users", JSON.stringify(updatedUser));
-      alert("Account created successfully!!");
-      // window.location.reload();
+      // alert("Account created successfully!!");
+      window.location.reload();
     } else {
       alert("Sorry!!");
     }
@@ -60,21 +58,10 @@ const Login = ({ setCurrentUser }) => {
     if (currentUser) {
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
       setCurrentUser(currentUser);
+      setError(null);
+    } else {
+      setError("الايميل او كلمه المرور غير صحيحه");
     }
-    const updatedUser = users.map((u) => {
-      if (
-        email.current.value === u.email &&
-        password.current.value === u.pass
-      ) {
-        return { ...u, isLoggedIn: true };
-      } else {
-        return { ...u, isLoggedIn: false };
-        // return u;
-      }
-    });
-
-    setUsers(updatedUser);
-    localStorage.setItem("users", JSON.stringify(updatedUser));
   };
 
   return (
@@ -83,12 +70,13 @@ const Login = ({ setCurrentUser }) => {
         <div className="login__container">
           <h3 className="login_title">اهلاً بك في مدير المهام</h3>
           <div className="input_space">
-            <input placeholder="الايميل" type="text" ref={email} />
+            <input placeholder="الايميل" type="email" ref={email} />
             <input placeholder="كلمة المرور" type="password" ref={password} />
           </div>
           <button className="login_btn" onClick={handleLogin}>
             دخول
           </button>
+          {error ? <div className="error">{error}</div> : ""}
           <span onClick={() => setShowSignIn(true)}>إنشاء حساب</span>
         </div>
       ) : (
@@ -96,12 +84,13 @@ const Login = ({ setCurrentUser }) => {
           <h3 className="login_title">اهلاً بك في مدير المهام</h3>
           <div className="input_space">
             <input placeholder="الاسم" type="text" ref={name} />
-            <input placeholder="الايميل" type="text" ref={email} />
+            <input placeholder="الايميل" type="email" ref={email} />
             <input placeholder="كلمة المرور" type="password" ref={password} />
           </div>
           <button className="login_btn" onClick={handleSignUp}>
             تسجيل
           </button>
+          {error ? <div className="error">{error}</div> : ""}
           <span onClick={() => setShowSignIn(false)}>لدي حساب</span>
         </div>
       )}
