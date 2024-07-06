@@ -1,8 +1,41 @@
-# React + Vite
+# TaR To-Do App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple To-Do app built with React that supports user sign-up and sign-in. Users can add, view, and manage their to-dos, which are stored in local storage. The app maintains user sessions and todos even after a page refresh.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- User Sign-Up and Sign-In
+- Persistent User Sessions
+- User-Specific To-Dos
+- Local Storage for Data Persistence
+
+## Getting Started
+
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/yourusername/react-todo-app.git
+    cd react-todo-app
+    ```
+
+2. Install dependencies:
+    ```sh
+    npm install
+    ```
+
+3. Start the development server:
+    ```sh
+    npm start
+    ```
+
+The app will be available at [http://localhost:3000](http://localhost:3000).
+
+## Usage
+
+- **Sign Up**: Create a new account.
+- **Sign In**: Log in with your registered email and password.
+- **Add To-Dos**: Add new to-dos and manage them in the list.
+
+## Try It Out
+
+You can try the app using this link: [https://tar-todos.netlify.app/](https://tar-todos.netlify.app/)
+
