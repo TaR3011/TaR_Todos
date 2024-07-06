@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import TodoList from "./components/TodoList";
+import Login from "./components/Login/Login";
 import { TodosContext } from "./contexts/todosContext";
+import { AuthContext } from "./contexts/authContext";
 
 const initialTodos = [
   {
@@ -21,14 +23,47 @@ const initialTodos = [
   },
 ];
 
+const initUsers = [
+  {
+    id: Date.now(),
+    email: "test@test.com",
+    name: "trr",
+    pass: "123456789",
+    isLoggedIn: false,
+  },
+];
+
 function App() {
   const [count, setCount] = useState(0);
   const [todos, setTodos] = useState(initialTodos);
+  const [users, setUsers] = useState(initUsers);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, []);
+
+  const handleSignOut = () => {
+    localStorage.removeItem("currentUser");
+    setCurrentUser(null);
+  };
 
   return (
-    <TodosContext.Provider value={{ todos, setTodos }}>
-      <TodoList />
-    </TodosContext.Provider>
+    <AuthContext.Provider value={{ users, setUsers }}>
+      <TodosContext.Provider value={{ todos, setTodos }}>
+        {/* {!isLoggedIn ? <Login /> : <TodoList />} */}
+        {/* <TodoList /> */}
+        {currentUser ? (
+          <TodoList signOut={handleSignOut} />
+        ) : (
+          <Login setCurrentUser={setCurrentUser} />
+        )}
+      </TodosContext.Provider>
+    </AuthContext.Provider>
   );
 }
 

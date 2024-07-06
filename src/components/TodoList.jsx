@@ -2,6 +2,7 @@ import { UilPlusCircle } from "@iconscout/react-unicons";
 import Todo from "./Todo";
 import { useRef, useState, useContext, useEffect } from "react";
 import { TodosContext } from "../contexts/todosContext";
+import { AuthContext } from "../contexts/authContext";
 
 // const initialTodos = [
 //   {
@@ -21,17 +22,28 @@ import { TodosContext } from "../contexts/todosContext";
 //   },
 // ];
 
-const TodoList = () => {
+const TodoList = ({ signOut }) => {
   // const [tasks, setTasks] = useState(initialTodos);
   const { todos, setTodos } = useContext(TodosContext);
+  const { users, setUsers, isLoggedIn, setIsLoggedIn } =
+    useContext(AuthContext);
+
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
   const [fillterValue, setFillterValue] = useState("all");
   const inputRef = useRef("");
   let todosWillRender = todos;
 
   useEffect(() => {
     console.log("calling use effect");
-    const storageTodos = JSON.parse(localStorage.getItem("todos")) ?? [];
-    setTodos(storageTodos);
+
+    // const storageTodos = JSON.parse(localStorage.getItem("todos")) ?? [];
+
+    if (currentUser) {
+      setTodos(currentUser.todos);
+    }
+
+    // setTodos(storageTodos);
   }, []);
 
   const doneTodos = todos.filter((t) => {
@@ -43,16 +55,36 @@ const TodoList = () => {
   });
 
   const handelInput = () => {
-    const randomId = Math.floor(Math.random() * 1000);
+    // const randomId = Math.floor(Math.random() * 1000);
     const currentValue = inputRef.current.value;
     const newTodo = {
-      id: randomId,
+      id: Date.now(),
       title: [currentValue],
       isDone: false,
     };
+
     const updatedTodos = [...todos, newTodo];
+
     setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+
+    // localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    updateLocalStorage(updatedTodos);
+  };
+
+  const updateLocalStorage = (updatedTodos) => {
+    const users = JSON.parse(localStorage.getItem("users"));
+    const updatedUsers = users.map((user) => {
+      if (user.id === currentUser.id) {
+        return { ...user, todos: updatedTodos };
+      }
+      return user;
+    });
+
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    localStorage.setItem(
+      "currentUser",
+      JSON.stringify({ ...currentUser, todos: updatedTodos })
+    );
   };
 
   const handleFilterChange = (e) => {
@@ -72,6 +104,7 @@ const TodoList = () => {
 
   return (
     <div className="container">
+      <button onClick={signOut}>خروج</button>
       <h2>قائمة المهام</h2>
       <div className="new_todo_input">
         <input type="text" placeholder="اضف مهمة..." ref={inputRef} />
@@ -95,7 +128,7 @@ const TodoList = () => {
       </div>
       <ul className="todo__list">
         {todosWillRender.map((todo) => (
-          <Todo todo={todo} />
+          <Todo todo={todo} updateTodoFun={updateLocalStorage} />
         ))}
       </ul>
     </div>

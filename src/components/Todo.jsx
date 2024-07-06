@@ -5,12 +5,18 @@ import { UilCheckCircle } from "@iconscout/react-unicons";
 import { useContext, useEffect, useRef, useState } from "react";
 import { TodosContext } from "../contexts/todosContext";
 
-const Todo = ({ todo }) => {
+const Todo = ({ todo, updateTodoFun }) => {
   const { todos, setTodos } = useContext(TodosContext);
   const [isEditable, setIsEditable] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
   const inputRef = useRef();
   const checkRef = useRef();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  useEffect(() => {
+    if (currentUser) {
+    }
+  }, []);
 
   useEffect(() => {
     if (todo.isDone) {
@@ -27,8 +33,8 @@ const Todo = ({ todo }) => {
       return t.id != todo.id;
     });
     setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
-
+    // localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    updateTodoFun(updatedTodos);
     setIsCheck(false);
   };
 
@@ -43,7 +49,8 @@ const Todo = ({ todo }) => {
     });
     setIsEditable(false);
     setTodos(updatedTodos);
-    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    // localStorage.setItem("todos", JSON.stringify(updatedTodos));
+    updateTodoFun(updatedTodos);
   };
 
   const handleCheck = () => {
@@ -60,7 +67,8 @@ const Todo = ({ todo }) => {
       });
       setIsCheck(true);
       setTodos(updatedTodos);
-      localStorage.setItem("todos", JSON.stringify(updatedTodos));
+      // localStorage.setItem("todos", JSON.stringify(updatedTodos));
+      updateTodoFun(updatedTodos);
     } else {
       checkRef.current.classList = "label";
       const updatedTodos = todos.map((t) => {
@@ -73,7 +81,8 @@ const Todo = ({ todo }) => {
       });
       setIsCheck(false);
       setTodos(updatedTodos);
-      localStorage.setItem("todos", JSON.stringify(updatedTodos));
+      // localStorage.setItem("todos", JSON.stringify(updatedTodos));
+      updateTodoFun(updatedTodos);
     }
 
     console.log(todos);
